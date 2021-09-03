@@ -47,7 +47,17 @@ function getTime(min) {
 }
 
 function timeToStr(time, useSec) {
+	var half = 'AM';
 	hour = time.getHours();
+	if (hour >= 12) {
+		half = 'PM';
+		if (hour >= 13) {
+			hour -= 12;
+		}
+	}
+	if (hour == 0) {
+		hour = 12;
+	}
 	if (hour < 10) {
 		hour = "0" + hour;
 	}
@@ -60,9 +70,11 @@ function timeToStr(time, useSec) {
 		sec = "0" + sec;
 	}
 	if (useSec) {
-		return hour + ":" + min + ":" + sec;
+		return hour + ":" + min + ":" + sec + " " + half;
 	}
-	return hour + ":" + min;
+	
+	
+	return hour + ":" + min + " " + half;
 }
 
 function getNextLocs() {
