@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<head>
+	<title>WPI Shuttle Locator</title>
+	<script src="getInfo.js"></script>
+	<link rel="icon" href="wpi.png">
+	<style>
+		table, th, td, thead {border: 1px solid black; border-collapse: collapse}
+	</style>
+</head>
+<body>
+	<h1>Welcome to the WPI Shuttle Locator!</h1>
+	<h3 style="margin-bottom:0;">Current time is <span id="time">00:00:00</span></h3>
+	<p id="no_shuttle" style="visibility: hidden; margin-top:0; margin-bottom:0;">Shuttle is not running!</p>
+	<p style="font-size:150%; margin-top:0;" id="next_loc">The Shuttle will be <span id="arrive" style="color:green">arriving</span> <span id="at">at</span> <b><span id="location">Faraday</span></b> at <span id="nextTime">00:00:00</span></p>
+	<table id="table">
+	</table>
+	<p style="font-size:75%;color:blue" id="notice">Note: this is based on the official schedule. The shuttle may run slightly behind or ahead of schedule!!</p>
+	<script>init2();</script>
+</body>
