@@ -2,11 +2,9 @@
 I know this code is really bad
 I'm not a web designer and I haven't touched js in nearly 4 years.
 But it ain't broke.
-
 Update it is now slightly less bad? Woo?
 <3 -David
 */
-
 
 function init() {
 	const date = new Date();
@@ -46,25 +44,33 @@ function getTime(min, time) {
 }
 
 function timeToStr(time, useSec) {
-	var half = 'AM';
-	hour = time.getHours();
-	if (hour >= 12) {
-		half = 'PM';
-		if (hour >= 13) {
-			hour -= 12;
+	var militaryTime = document.forms["options"][0].checked;
+	var half = '';
+	
+	var hour = time.getHours();
+	if (!militaryTime) {
+		half = 'AM';
+		if (hour >= 12) {
+			half = 'PM';
+			if (hour >= 13) {
+				hour -= 12;
+			}
 		}
-	}
-	if (hour == 0) {
-		hour = 12;
-	}
+		if (hour == 0) {
+			hour = 12;
+		}
+	}	
+	
 	if (hour < 10) {
 		hour = "0" + hour;
 	}
-	min = time.getMinutes();
+	
+	var min = time.getMinutes();
 	if (min < 10) {
 		min = "0" + min;
 	}
-	sec = time.getSeconds();
+	
+	var sec = time.getSeconds();
 	if (sec < 10) {
 		sec = "0" + sec;
 	}
