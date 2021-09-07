@@ -131,7 +131,7 @@ function init2() {
 	}
 	else {
 		update(true, "")
-		setInterval(update, 1000, false, "");
+		setInterval(update, 1000, true, "");
 	}
 }
 
