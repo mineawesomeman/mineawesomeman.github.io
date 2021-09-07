@@ -6,33 +6,6 @@ Update it is now slightly less bad? Woo?
 <3 -David
 */
 
-function init() {
-	const date = new Date();
-	document.write("<h1>Welcome to the WPI Shuttle Locator!</h1>");
-	document.write("<h3>Current time: " + timeToStr(date, true) + "</h3>");
-	if (date.getHours() < 7 || date.getHours() >= 18 || date.getDay() == 0 || date.getDay() == 6) {
-		document.write("<p>Shuttle is not running!</p>");
-		return;
-	}
-	const locs = getNextLocs(date);
-	
-	if (locs[0].AD == "a") {
-		document.write("<p style=\"font-size:150%\">The Shuttle will be <span style=\"color:green\">arriving</span> at <b>" + locs[0].name + "</b> at " + timeToStr(locs[0].time, false));
-	} else {
-		document.write("<p style=\"font-size:150%\">The Shuttle will be <span style=\"color:red\">departing</span> from <b>" + locs[0].name + "</b> at " + timeToStr(locs[0].time, false));
-	}
-	
-	//document.write("<p>Next arrivals:</p>");
-	document.write("<table> <thead>Next arrivals:</thead> <tr> <th>Location Name</th> <th>Arrival Time</th> </tr>");
-	
-	for (let i = 1; i < locs.length; i++) {
-		document.write("<tr> <td>" + locs[i].name + "</td> <td>" + timeToStr(locs[i].time, false) + "</td> </tr>");
-	}
-	
-	document.write("</table>");
-	document.write("<p style=\"font-size:75%;color:blue\">Note: this is based on the official schedule. The shuttle may run slightly behind or ahead of schedule!!</p>");
-}
-
 function getTime(min, time) {
 	var date = new Date(time.getYear(), time.getMonth(), time.getDate(), time.getHours(), time.getMinutes());
 	if (min >= 60) {
@@ -129,7 +102,7 @@ function getNextLocs(time) {
 	return ret;
 }
 
-function init2() {
+function init() {
 	const url = document.URL.toString();
 	
 	if (url.substring(url.length - 3, url.length - 2) == ":"){
