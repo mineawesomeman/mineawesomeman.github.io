@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet">
+        <title>David's IMGD 2900 Games</title>
+        <style>
+            button {
+                background: lightblue;
+            }
+
+            button:hover {
+                background: rgb(110, 135, 143);
+            }
+        </style>
+        <script>
+            function navToPage(link) {
+                window.location.href = "https://mineawesomeman.github.io" + link;
+            }
+        </script>
+    </head>
+    <body>
+        <main class="my-0 mx-auto max-w-3xl text-center">
+            <h2 class="p-6 text-4xl">David Rosenstein's IMGD 2900 Games</h2>
+            
+            <p class="px-10 pb-10 text-center">A brickbreaker type game for the first Perlenspiel project <button class="bg-blue hover:bg-darkblue px-5 py-3 rounded-lg" onclick="navToPage('/IMGD2900/dev0')">Dev0</button></p>
+        </main>
+    </body>
+</html>
