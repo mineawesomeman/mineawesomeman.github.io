@@ -49,10 +49,11 @@ Any value returned is ignored.
 */
 
 let ballX = 15;
-let ballY = 30;
+let ballY = 29;
 let xDir = -1;
 let yDir = -1;
 let barLoc = 15;
+let loop = null;
 
 PS.init = function( system, options ) {
 	// Uncomment the following code line
@@ -78,19 +79,51 @@ PS.init = function( system, options ) {
 	// Uncomment the following code line and
 	// change the string parameter as needed.
 
-	PS.statusText( "Breakbricker" );
+	PS.statusText( "Keep-Up" );
 	PS.color(ballX, ballY, PS.COLOR_BLUE);
 
-	setInterval(moveBall, 100)
+	for (let i = 0; i < 32; i++) {
+		for (let j = 0; j < 32; j++) {
+			fixBorder(i, j);
+		}
+	}
 
+	PS.color(15, 30, PS.COLOR_RED);
+	PS.color(14, 30, PS.COLOR_RED);
+	PS.color(16, 30, PS.COLOR_RED);
+
+	PS.debug("Click to start!\n");
 	// Add any other initialization code you need here.
 };
 
+function fixBorder(x, y) {
+	let border = { top : 0, left : 0, bottom : 0, right : 0, equal : true, width : 1 };
+			
+	if (x == 0) {
+		border.left = 1;
+	}
+	if (x == 31) {
+		border.right = 1;
+	}
+	if (y == 0) {
+		border.top = 1;
+	}
+	if (y == 31) {
+		border.bottom = 1;
+	}
+
+	PS.radius(x, y, 0);
+	PS.border(x, y, border);
+}
+
 function moveBall() {
 	PS.color(ballX, ballY, PS.COLOR_WHITE);
+	fixBorder(ballX, ballY);
+
 	ballX += xDir;
 	ballY += yDir;
 	PS.color(ballX, ballY, PS.COLOR_BLUE);
+	PS.radius(ballX, ballY, 50);
 	if (ballX <= 0) {
 		xDir = 1;
 	}
@@ -100,12 +133,22 @@ function moveBall() {
 	if (ballY <= 0) {
 		yDir = 1;
 	}
-	if (ballY >= 31) {
-		yDir = -1;
-	}
 
 	if (ballY == 29 && Math.abs(ballX-barLoc) <= 1) {
 		yDir = -1;
+	}
+
+	if (ballY >= 31) {
+		clearInterval(loop);
+		loop = -1;
+		for (let i = 0; i < 32; i++) {
+			for (let j = 0; j < 32; j++) {
+				PS.color(i, j, PS.COLOR_WHITE);
+				fixBorder(i, j);
+			}
+		}
+
+		PS.debug("You lose!");
 	}
 
 	PS.gridRefresh();
@@ -130,6 +173,10 @@ PS.touch = function( x, y, data, options ) {
 	// PS.glyph(x, y, "B")
 	// Add code here for mouse clicks/touches
 	// over a bead.
+
+	if (loop == null) {
+		loop = setInterval(moveBall, 100);
+	}
 };
 
 /*
@@ -161,6 +208,9 @@ This function doesn't have to do anything. Any value returned is ignored.
 */
 
 PS.enter = function( x, y, data, options ) {
+	if (loop == -1) {
+		return;
+	}
 	// Uncomment the following code line to inspect x/y parameters:
 
 	// PS.debug( "PS.enter() @ " + x + ", " + y + "\n" );
@@ -178,7 +228,13 @@ PS.enter = function( x, y, data, options ) {
 		PS.color(x-1, 30, PS.COLOR_RED);
 	}
 		
-
+	if (loop == null) {
+		PS.color(ballX, ballY, PS.COLOR_WHITE);
+		PS.radius(ballX, ballY, 0);
+		ballX = x;
+		PS.color(ballX, ballY, PS.COLOR_BLUE);
+		PS.radius(ballX, ballY, 50);
+	}
 	// Add code here for when the mouse cursor/touch enters a bead.
 };
 
