@@ -79,7 +79,7 @@ PS.init = function( system, options ) {
 	// Uncomment the following code line and
 	// change the string parameter as needed.
 
-	PS.statusText( "Keep-Up" );
+	// PS.statusText( "Keep-Up" );
 	PS.color(ballX, ballY, PS.COLOR_BLUE);
 
 	for (let i = 0; i < 32; i++) {
@@ -92,7 +92,7 @@ PS.init = function( system, options ) {
 	PS.color(14, 30, PS.COLOR_RED);
 	PS.color(16, 30, PS.COLOR_RED);
 
-	PS.debug("Click to start!\n");
+	PS.statusText("Click to start!\n");
 	// Add any other initialization code you need here.
 };
 
@@ -148,7 +148,7 @@ function moveBall() {
 			}
 		}
 
-		PS.debug("You lose!");
+		PS.statusText("You lose!");
 	}
 
 	PS.gridRefresh();
@@ -173,6 +173,8 @@ PS.touch = function( x, y, data, options ) {
 	// PS.glyph(x, y, "B")
 	// Add code here for mouse clicks/touches
 	// over a bead.
+
+	PS.statusText("Keep the ball up!")
 
 	if (loop == null) {
 		loop = setInterval(moveBall, 100);
