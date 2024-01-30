@@ -72,6 +72,9 @@ PS.init = function( system, options ) {
 	// the x and y parameters as needed.
 
 	PS.gridSize( 32, 32 );
+	PS.statusText("Click to start!");
+	// PS.statusColor(PS.COLOR_WHITE);
+	// PS.gridColor(PS.COLOR_GRAY_DARK);
 
 	// This is also a good place to display
 	// your game title or a welcome message
@@ -80,6 +83,12 @@ PS.init = function( system, options ) {
 	// change the string parameter as needed.
 
 	// PS.statusText( "Keep-Up" );
+	resetBoard();
+
+	// Add any other initialization code you need here.
+};
+
+function resetBoard() {
 	PS.color(ballX, ballY, PS.COLOR_BLUE);
 
 	for (let i = 0; i < 32; i++) {
@@ -88,13 +97,12 @@ PS.init = function( system, options ) {
 		}
 	}
 
+	PS.radius(ballX, ballY, 50);
+
 	PS.color(15, 30, PS.COLOR_RED);
 	PS.color(14, 30, PS.COLOR_RED);
 	PS.color(16, 30, PS.COLOR_RED);
-
-	PS.statusText("Click to start!\n");
-	// Add any other initialization code you need here.
-};
+}
 
 function fixBorder(x, y) {
 	let border = { top : 0, left : 0, bottom : 0, right : 0, equal : true, width : 1 };
@@ -148,7 +156,7 @@ function moveBall() {
 			}
 		}
 
-		PS.statusText("You lose!");
+		PS.statusText("You lose! Click to try again!");
 	}
 
 	PS.gridRefresh();
@@ -174,10 +182,18 @@ PS.touch = function( x, y, data, options ) {
 	// Add code here for mouse clicks/touches
 	// over a bead.
 
-	PS.statusText("Keep the ball up!")
-
 	if (loop == null) {
+		PS.statusText("Keep the ball up!");
 		loop = setInterval(moveBall, 100);
+	}
+	if (loop == -1) {
+		loop = null;
+		PS.statusText("Click to start!");
+		ballY = 29;
+		ballX = 15;
+		xDir = -1;
+		yDir = -1;
+		resetBoard();
 	}
 };
 
@@ -232,7 +248,7 @@ PS.enter = function( x, y, data, options ) {
 		
 	if (loop == null) {
 		PS.color(ballX, ballY, PS.COLOR_WHITE);
-		PS.radius(ballX, ballY, 0);
+		fixBorder(ballX, ballY);
 		ballX = x;
 		PS.color(ballX, ballY, PS.COLOR_BLUE);
 		PS.radius(ballX, ballY, 50);
