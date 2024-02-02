@@ -93,7 +93,7 @@ PS.init = function( system, options ) {
 	// loadImages();
 	loadBoard();
 	PS.seed(PS.date().time);
-	PS.imageLoad("1.png", (img) => {PS.imageBlit(img, 0, 0)});
+	// PS.imageLoad("1.png", (img) => {PS.imageBlit(img, 0, 0)});
 
 	// Add any other initialization code you need here.
 	
@@ -178,7 +178,20 @@ function leftMove() {
 }
 
 function checkBoard() {
+	for (let i = 1; i <= 9; i ++) {
+		if (board[i-1] != i) {
+			return;
+		}
+	}
+	if (board[9] != 'a' || board[10] != 'b' || board[11] != 'c' || board[12] != 'd' || board[13] != 'e' || board[14] != 'f') {
+		return;
+	}
 
+	for (let i = 0; i < 15; i++) {
+		PS.color(LOCATIONS[i].x, LOCATIONS[i].y, PS.COLOR_GREEN);
+		PS.statusText("You Win! Click to Play again!");
+		gameState = 0;
+	}
 }
 
 /*
@@ -228,6 +241,7 @@ PS.touch = function( x, y, data, options ) {
 			downMove();
 		}
 		loadBoard();
+		checkBoard();
 	}
 };
 
@@ -339,6 +353,7 @@ PS.keyDown = function( key, shift, ctrl, options ) {
 	}
 
 	loadBoard();
+	checkBoard();
 	// Add code here for when a key is pressed.
 };
 
