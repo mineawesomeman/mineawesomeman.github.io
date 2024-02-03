@@ -76,7 +76,3 @@ function nextFrame() {
 		PS.timerStop(timer);
 	}
 }
-
-PS.touch = function (x, y, data, options) {
-	PS.debug(`${currentFrame}`);
-}
