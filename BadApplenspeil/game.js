@@ -77,6 +77,6 @@ function nextFrame() {
 	}
 }
 
-PS.touch = function (_, _, _, _) {
+PS.touch = function (x, y, data, options) {
 	PS.debug(`${currentFrame}`);
 }
