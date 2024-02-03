@@ -58,9 +58,7 @@ function finishLoad() {
 			onLoad : (data) => {
 				PS.statusText( "BadApplenspeil" );
 				PS.imageBlit(frames[0], 0, 0);
-				PS.audioPlayChannel (audioChannel);
 				timer = PS.timerStart(2, nextFrame);
-				
 				PS.gridRefresh();
 			} 
 		} );	
