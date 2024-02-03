@@ -44,7 +44,7 @@ PS.init = function( system, options ) {
 
 function formatNumberToFile(num) {
 	let numStr = num.toLocaleString(undefined, {minimumIntegerDigits: 6, useGrouping: false});
-	return `bad-apple_${numStr}.bmp`
+	return `frames/bad-apple_${numStr}.bmp`
 }
 
 function finishLoad() {
