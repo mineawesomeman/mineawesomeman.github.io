@@ -5,6 +5,7 @@ let loadCount = 0; //this keeps track of how many frames have been loaded
 let currentFrame = 0;
 let timer = null;
 let audioChannel = null;
+let finishedLoading = false;
 
 /*
 PS.init( system, options )
@@ -56,11 +57,14 @@ function formatNumberToFile(num) {
 }
 
 function finishLoad() {
-	PS.statusText( "BadApplenspeil" );
-	PS.imageBlit(frames[0], 0, 0);
-	PS.audioPlayChannel (audioChannel);
-	timer = PS.timerStart(3, nextFrame);
-	PS.gridRefresh();
+	if (!finishedLoading) {
+		PS.statusText( "BadApplenspeil" );
+		PS.imageBlit(frames[0], 0, 0);
+		PS.audioPlayChannel (audioChannel);
+		timer = PS.timerStart(2, nextFrame);
+		finishedLoading = true;
+		PS.gridRefresh();
+	}
 }
 
 function nextFrame() {
@@ -68,6 +72,8 @@ function nextFrame() {
 	if (currentFrame < 6566) {
 		PS.imageBlit(frames[currentFrame], 0, 0);
 		PS.gridRefresh();
+	} else {
+		PS.timerStop(timer);
 	}
 }
 
