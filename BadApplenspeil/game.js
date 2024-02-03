@@ -32,14 +32,6 @@ PS.init = function( system, options ) {
 	PS.statusText( "Loading..." );
 	PS.gridRefresh(); 
 
-	PS.audioLoad( "bad-apple", {
-		lock : true,
-		path: "https://mineawesomeman.github.io/BadApplenspeil/",
-		onLoad : (data) => {
-			audioChannel = data.channel;
-		} 
-	} );
-
 	//load all the frames into the array lol
 	for (let i = 0; i < 6566; i++) {
 		PS.imageLoad(formatNumberToFile(i), (img) => {
@@ -59,12 +51,19 @@ function formatNumberToFile(num) {
 
 function finishLoad() {
 	if (!finishedLoading) {
-		PS.statusText( "BadApplenspeil" );
-		PS.imageBlit(frames[0], 0, 0);
-		PS.audioPlayChannel (audioChannel);
-		timer = PS.timerStart(2, nextFrame);
 		finishedLoading = true;
-		PS.gridRefresh();
+		PS.audioPlay( "bad-apple", {
+			lock : true,
+			path: "https://mineawesomeman.github.io/BadApplenspeil/",
+			onLoad : (data) => {
+				PS.statusText( "BadApplenspeil" );
+				PS.imageBlit(frames[0], 0, 0);
+				PS.audioPlayChannel (audioChannel);
+				timer = PS.timerStart(2, nextFrame);
+				
+				PS.gridRefresh();
+			} 
+		} );	
 	}
 }
 
