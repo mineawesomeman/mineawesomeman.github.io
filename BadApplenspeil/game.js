@@ -32,7 +32,7 @@ PS.init = function( system, options ) {
 	PS.statusText( "Loading..." );
 	PS.gridRefresh(); 
 
-	PS.audioLoad( "bad_apple", {
+	PS.audioLoad( "bad-apple", {
 		lock : true,
 		path: "https://mineawesomeman.github.io/BadApplenspeil/",
 		onLoad : (data) => {
