@@ -56,7 +56,7 @@ function finishLoad() {
 
 function nextFrame() {
 	currentFrame++;
-	PS.imageBlit(frames[currentFrame]);
+	PS.imageBlit(frames[currentFrame], 0, 0);
 
 	if (currentFrame >= 6555) {
 		PS.timerStop(timer);
