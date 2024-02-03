@@ -34,7 +34,7 @@ PS.init = function( system, options ) {
 
 	PS.audioLoad( "bad_apple", {
 		lock : true,
-		path: "./",
+		path: "https://mineawesomeman.github.io/BadApplenspeil/",
 		onLoad : (data) => {
 			audioChannel = data.channel;
 		} 
