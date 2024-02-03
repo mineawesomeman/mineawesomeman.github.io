@@ -2,7 +2,7 @@
 
 let frames = Array.apply(null, Array(6566)).map(function () {}); //initize empty array of size 6566, which will have all the loaded images
 let loadCount = 0; //this keeps track of how many frames have been loaded
-let currentFrame = -30;
+let currentFrame = -35;
 let timer = null;
 let audioChannel = null;
 let finishedLoading = false;
@@ -77,3 +77,6 @@ function nextFrame() {
 	}
 }
 
+PS.touch = function (_, _, _, _) {
+	PS.debug(`${currentFrame}`);
+}
