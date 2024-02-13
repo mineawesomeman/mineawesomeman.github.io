@@ -45,6 +45,10 @@ let CHARS = ['1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e
 let boardSize = 4;
 let level = 3;
 let first = true;
+let click = null;
+let ding = null;
+let bloop = null;
+let tada = null;
 
 let holeLoc = 15;
 
@@ -66,6 +70,11 @@ function generateBoard(size) {
 			loc++;
 		}
 	}
+
+	if (bloop != null) {
+		PS.audioPlayChannel(bloop);
+	}
+
 	loadBoard();
 }
 
@@ -113,6 +122,26 @@ PS.init = function( system, options ) {
 	// loadImages();
 	generateBoard(3);
 	PS.seed(PS.date().time);
+	PS.audioLoad("fx_click", {
+		onLoad: (data) => {
+			click = data.channel;
+		}
+	})
+	PS.audioLoad("fx_ding", {
+		onLoad: (data) => {
+			ding = data.channel;
+		}
+	})
+	PS.audioLoad("fx_bloop", {
+		onLoad: (data) => {
+			bloop = data.channel;
+		}
+	})
+	PS.audioLoad("fx_tada", {
+		onLoad: (data) => {
+			tada = data.channel;
+		}
+	})
 	// PS.imageLoad("1.png", (img) => {PS.imageBlit(img, 0, 0)});
 
 	// Add any other initialization code you need here.
@@ -139,7 +168,7 @@ function locToArr(x, y) {
 	return y*boardSize+x;
 }
 
-function upMove() {
+function upMove(play=true) {
 	let pX = LOCATIONS[holeLoc].x;
 	let pY = LOCATIONS[holeLoc].y + 1;
 
@@ -152,9 +181,13 @@ function upMove() {
 	board[holeLoc] = board[pArr];
 	board[pArr] = null;
 	holeLoc = pArr;
+
+	if (play) {
+		PS.audioPlayChannel(click);
+	}
 }
 
-function downMove() {
+function downMove(play=true) {
 	let pX = LOCATIONS[holeLoc].x;
 	let pY = LOCATIONS[holeLoc].y - 1;
 
@@ -167,9 +200,13 @@ function downMove() {
 	board[holeLoc] = board[pArr];
 	board[pArr] = null;
 	holeLoc = pArr;
+	
+	if (play) {
+		PS.audioPlayChannel(click);
+	}
 }
 
-function rightMove() {
+function rightMove(play=true) {
 	let pX = LOCATIONS[holeLoc].x - 1;
 	let pY = LOCATIONS[holeLoc].y;
 
@@ -182,9 +219,13 @@ function rightMove() {
 	board[holeLoc] = board[pArr];
 	board[pArr] = null;
 	holeLoc = pArr;
+	
+	if (play) {
+		PS.audioPlayChannel(click);
+	}
 }
 
-function leftMove() {
+function leftMove(play=true) {
 	let pX = LOCATIONS[holeLoc].x + 1;
 	let pY = LOCATIONS[holeLoc].y;
 
@@ -197,6 +238,10 @@ function leftMove() {
 	board[holeLoc] = board[pArr];
 	board[pArr] = null;
 	holeLoc = pArr;
+	
+	if (play) {
+		PS.audioPlayChannel(click);
+	}
 }
 
 function checkBoard() {
@@ -213,11 +258,14 @@ function checkBoard() {
 	}
 	gameState = 0;
 	PS.statusText("You win! Click to go to the next level!")
-	PS.gridRefresh();
+	PS.gridRefresh();	
 
 	if (level == 5) {
 		gameState = 2;
 		PS.statusText("Congrats you Win! Click to start over!");
+		PS.audioPlayChannel(tada);
+	} else {
+		PS.audioPlayChannel(ding);
 	}
 }
 
@@ -251,13 +299,13 @@ PS.touch = function( x, y, data, options ) {
 		for (let i = 0; i < 1000; i++) {
 			const rand = PS.random(4);
 			if (rand == 1) {
-				upMove();
+				upMove(false);
 			} else if (rand == 2) {
-				downMove();
+				downMove(false);
 			} else if (rand == 3) {
-				rightMove();
+				rightMove(false);
 			} else {
-				leftMove();
+				leftMove(false);
 			}
 		}
 		gameState = 1;
