@@ -189,7 +189,7 @@ PS.init = function( system, options ) {
 			if (tanks[i].owner == 1) {
 				PS.debug("spawning sprite");
 				tankSprites[i] = PS.spriteImage(image);
-				PS.spriteAxis(tankSprites[i], tanks[i].x, tanks[i].y);
+				PS.spriteMove(tankSprites[i], tanks[i].x, tanks[i].y);
 				PS.spriteShow(tankSprites[i]);
 			}
 		}
@@ -200,7 +200,7 @@ PS.init = function( system, options ) {
 			if (tanks[i].owner == 2) {
 				PS.debug("spawning sprite");
 				tankSprites[i] = PS.spriteImage(image);
-				PS.spriteAxis(tankSprites[i], tanks[i].x, tanks[i].y);
+				PS.spriteMove(tankSprites[i], tanks[i].x, tanks[i].y);
 				PS.spriteShow(tankSprites[i]);
 			}
 		}
