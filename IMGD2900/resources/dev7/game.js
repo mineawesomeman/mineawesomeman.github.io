@@ -338,7 +338,7 @@ function fire(x, y) {
 
 	board[y][x] = 2;
 
-	PS.audioPlayChannel(blast);
+	// PS.audioPlayChannel(blast);
 	PS.color(x, y, PS.COLOR_RED);
 }
 
@@ -476,12 +476,17 @@ function enemyFire(tank) {
 		gameState = 0;
 	} else {
 		gameState = 5;
-		PS.statusText("Enemy Wins!!!");
-		PS.audioPlayChannel(wilhelm);
 	}
 
 	selected = null;
-	PS.audioPlayChannel(blast);
+	PS.audioPlayChannel(blast, {
+		onEnd: () => {
+			if (gameState == 5) {
+				PS.audioPlayChannel(wilhelm);
+				PS.statusText("Enemy Wins!!!");
+			}
+		}
+	});
 	PS.gridRefresh();
 }
 
@@ -571,6 +576,7 @@ PS.touch = function( x, y, data, options ) {
 					fire(spotX, spotY);
 					PS.statusText("Your Turn");
 					hideOptions();
+					PS.color(tankX, tankY, PS.COLOR_VIOLET);
 
 					let enemiesLeft = false;
 
@@ -587,9 +593,15 @@ PS.touch = function( x, y, data, options ) {
 						enemyTurn();
 					} else {
 						gameState = 5;
-						PS.statusText("You win!!!!!");
-						PS.audioPlayChannel(tada);
 					}
+					PS.audioPlayChannel(blast, {
+						onEnd: () => {
+							if (gameState == 5) {
+								PS.statusText("You win!!!!!");
+								PS.audioPlayChannel(tada);
+							}
+						}
+					})
 					
 				}
 			}
