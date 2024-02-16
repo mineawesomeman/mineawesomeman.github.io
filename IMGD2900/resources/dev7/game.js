@@ -100,7 +100,7 @@ let move = null;
 let blast = null;
 
 //SPRITES
-let tankSprites = [];
+// let tankSprites = [];
 
 /*
 PS.init( system, options )
@@ -137,7 +137,7 @@ PS.init = function( system, options ) {
 	// Uncomment the following code line and
 	// change the string parameter as needed.
 
-	PS.statusText( "Your turn" );
+	PS.statusText( "Your Turn - Select Tank" );
 	PS.statusColor(PS.COLOR_WHITE);
 
 	PS.gridColor(PS.COLOR_GRAY_DARK);
@@ -171,40 +171,40 @@ PS.init = function( system, options ) {
 				if (space == 10) {
 					PS.color(i, j, PS.COLOR_VIOLET);
 					tanks.push({x: i, y: j, owner: 1, id: currID});
-					tankSprites.push(null);
+					// tankSprites.push(null);
 					currID++;
 				}
 				if (space == 20) {
 					PS.color(i, j, PS.COLOR_YELLOW);
 					tanks.push({x: i, y: j, owner: 2, id: currID});
-					tankSprites.push(null);
+					// tankSprites.push(null);
 					currID++;
 				}
 			}
 		}
 	}
 
-	PS.imageLoad('sprites/tank-y.png', (image) => {
-		for (let i = 0; i < tanks.length; i++) {
-			if (tanks[i].owner == 1) {
-				PS.debug("spawning sprite");
-				tankSprites[i] = PS.spriteImage(image);
-				PS.spriteMove(tankSprites[i], tanks[i].x, tanks[i].y);
-				PS.spriteShow(tankSprites[i]);
-			}
-		}
-	});
+	// PS.imageLoad('sprites/tank-y.png', (image) => {
+	// 	for (let i = 0; i < tanks.length; i++) {
+	// 		if (tanks[i].owner == 1) {
+	// 			PS.debug("spawning sprite");
+	// 			tankSprites[i] = PS.spriteImage(image);
+	// 			PS.spriteMove(tankSprites[i], tanks[i].x, tanks[i].y);
+	// 			PS.spriteShow(tankSprites[i]);
+	// 		}
+	// 	}
+	// });
 
-	PS.imageLoad('sprites/tank-e.png', (image) => {
-		for (let i = 0; i < tanks.length; i++) {
-			if (tanks[i].owner == 2) {
-				PS.debug("spawning sprite");
-				tankSprites[i] = PS.spriteImage(image);
-				PS.spriteMove(tankSprites[i], tanks[i].x, tanks[i].y);
-				PS.spriteShow(tankSprites[i]);
-			}
-		}
-	});
+	// PS.imageLoad('sprites/tank-e.png', (image) => {
+	// 	for (let i = 0; i < tanks.length; i++) {
+	// 		if (tanks[i].owner == 2) {
+	// 			PS.debug("spawning sprite");
+	// 			tankSprites[i] = PS.spriteImage(image);
+	// 			PS.spriteMove(tankSprites[i], tanks[i].x, tanks[i].y);
+	// 			PS.spriteShow(tankSprites[i]);
+	// 		}
+	// 	}
+	// });
 
 	PS.audioLoad('fx_click', {
 		onLoad: (data) => {
@@ -475,7 +475,7 @@ function enemyMove(target) {
 	PS.color(bestSpot.x, bestSpot.y, PS.COLOR_YELLOW);
 	board[bestSpot.y][bestSpot.x] = 20;
 
-	PS.statusText("Your Turn");
+	PS.statusText("Your Turn - Select Tank");
 	gameState = 0;
 	selected = null;
 
@@ -499,7 +499,7 @@ function enemyFire(tank) {
 	}
 
 	if (playersLeft) {
-		PS.statusText("Your Turn");
+		PS.statusText("Your Turn - Select Tank");
 		gameState = 0;
 	} else {
 		gameState = 5;
@@ -576,7 +576,7 @@ PS.touch = function( x, y, data, options ) {
 			} else {
 				PS.color(selected.x, selected.y, PS.COLOR_VIOLET);
 			
-				PS.statusText("Your Turn");
+				PS.statusText("Your Turn - Select Tank");
 				hideOptions();
 				gameState = 0;
 				selected = null;
@@ -601,7 +601,7 @@ PS.touch = function( x, y, data, options ) {
 					clicked = true;
 					hideFire();
 					fire(spotX, spotY);
-					PS.statusText("Your Turn");
+					PS.statusText("Your Turn - Select Tank");
 					hideOptions();
 					PS.color(tankX, tankY, PS.COLOR_VIOLET);
 
@@ -648,12 +648,12 @@ PS.touch = function( x, y, data, options ) {
 				for (let i = 9; i <= 14; i++) {
 					PS.color(i, 17, PS.COLOR_CYAN);
 				}
-				PS.statusText("Moving Tank");
+				PS.statusText("Choose where to move to");
 				showMovement();
 			} else {
 				PS.color(selected.x, selected.y, PS.COLOR_VIOLET);
 			
-				PS.statusText("Your Turn");
+				PS.statusText("Your Turn - Select Tank");
 				hideOptions();
 				gameState = 0;
 				selected = null;
@@ -674,7 +674,7 @@ PS.touch = function( x, y, data, options ) {
 			for (let i = 9; i <= 14; i++) {
 				PS.color(i, 17, PS.COLOR_CYAN);
 			}
-			PS.statusText("Moving Tank");
+			PS.statusText("Choose where to move to");
 			showMovement();
 		}
 
@@ -715,7 +715,7 @@ PS.touch = function( x, y, data, options ) {
 			if (gameState == 1) {
 				PS.color(selected.x, selected.y, PS.COLOR_VIOLET);
 			}
-			PS.statusText("Your Turn");
+			PS.statusText("Your Turn - Select Tank");
 			hideOptions();
 			gameState = 0;
 			selected = null;
