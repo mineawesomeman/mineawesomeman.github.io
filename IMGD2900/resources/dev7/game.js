@@ -99,6 +99,9 @@ let click = null;
 let move = null;
 let blast = null;
 
+//SPRITES
+let tankSprites = [];
+
 /*
 PS.init( system, options )
 Called once after engine is initialized but before event-polling begins.
@@ -168,16 +171,38 @@ PS.init = function( system, options ) {
 				if (space == 10) {
 					PS.color(i, j, PS.COLOR_VIOLET);
 					tanks.push({x: i, y: j, owner: 1, id: currID});
+					tankSprites.push(null);
 					currID++;
 				}
 				if (space == 20) {
 					PS.color(i, j, PS.COLOR_YELLOW);
 					tanks.push({x: i, y: j, owner: 2, id: currID});
+					tankSprites.push(null);
 					currID++;
 				}
 			}
 		}
 	}
+
+	PS.imageLoad('sprites/tank-y.png', (image) => {
+		for (let i = 0; i < tanks.length; i++) {
+			if (tanks[i].owner == 1) {
+				tankSprites[i] = PS.spriteImage(image);
+				PS.spriteAxis(tankSprites[i], tanks[i].x, tanks[i].y);
+				PS.spriteShow(tankSprites[i]);
+			}
+		}
+	});
+
+	PS.imageLoad('sprites/tank-e.png', (image) => {
+		for (let i = 0; i < tanks.length; i++) {
+			if (tanks[i].owner == 2) {
+				tankSprites[i] = PS.spriteImage(image);
+				PS.spriteAxis(tankSprites[i], tanks[i].x, tanks[i].y);
+				PS.spriteShow(tankSprites[i]);
+			}
+		}
+	});
 
 	PS.audioLoad('fx_click', {
 		onLoad: (data) => {
