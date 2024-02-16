@@ -187,6 +187,7 @@ PS.init = function( system, options ) {
 	PS.imageLoad('sprites/tank-y.png', (image) => {
 		for (let i = 0; i < tanks.length; i++) {
 			if (tanks[i].owner == 1) {
+				PS.debug("spawning sprite");
 				tankSprites[i] = PS.spriteImage(image);
 				PS.spriteAxis(tankSprites[i], tanks[i].x, tanks[i].y);
 				PS.spriteShow(tankSprites[i]);
@@ -197,6 +198,7 @@ PS.init = function( system, options ) {
 	PS.imageLoad('sprites/tank-e.png', (image) => {
 		for (let i = 0; i < tanks.length; i++) {
 			if (tanks[i].owner == 2) {
+				PS.debug("spawning sprite");
 				tankSprites[i] = PS.spriteImage(image);
 				PS.spriteAxis(tankSprites[i], tanks[i].x, tanks[i].y);
 				PS.spriteShow(tankSprites[i]);
