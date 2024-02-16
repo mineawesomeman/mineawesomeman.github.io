@@ -351,7 +351,9 @@ function hideFire() {
 		const spotX = tankX + FIRELOCS[i][0];
 		const spotY = tankY + FIRELOCS[i][1];
 
-		PS.glyph(spotX, spotY, '');
+		if (spotX >= 0 && spotX <= 15 && spotY >= 0 && spotY <= 15) {
+			PS.glyph(spotX, spotY, '');
+		}
 	}
 }
 
