@@ -170,7 +170,7 @@ PS.init = function( system, options ) {
 				}
 				if (space == 10) {
 					PS.color(i, j, PS.COLOR_VIOLET);
-					PS.glyph(i, j, '☔');
+					PS.glyph(i, j, "☔");
 					tanks.push({x: i, y: j, owner: 1, id: currID});
 					// tankSprites.push(null);
 					currID++;
