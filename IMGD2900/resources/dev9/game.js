@@ -63,9 +63,29 @@ const MAP1 = [
 	[1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0],
 	[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
 	[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
-]
+];
+
+const MAP2 = [
+	[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+	[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+	[1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1],
+	[1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1],
+	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 20, 0, 0, 0],
+	[0, 10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 20, 0, 0, 0],
+	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 20, 0],
+	[1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+	[1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+	[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+	[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+];
 
 let board = MAP1;
+let winner = 0;
 
 function generateFireLocs() {
 	let locarr= [];
@@ -89,6 +109,8 @@ function generateFireLocs() {
 */
 let gameState = 0;
 
+let level = 1;
+
 let tanks = [];
 let selected = null;
 
@@ -99,8 +121,15 @@ let click = null;
 let move = null;
 let blast = null;
 
-//SPRITES
-// let tankSprites = [];
+//EMOJIS
+// for some reason, pasting the emojis into my code doesn't work so I have to use the raw unicode values lmao
+const TANK_SYMBOL = parseInt("1f681", 16);
+const BLAST_SYMBOL = parseInt("1f4a5", 16);
+
+//COLORS
+const MY_YELLOW = PS.makeRGB(255, 255, 76);
+const MY_PURPLE = PS.makeRGB(162, 76, 255);
+const MY_BLUE = PS.makeRGB(63, 63, 255);
 
 /*
 PS.init( system, options )
@@ -137,55 +166,12 @@ PS.init = function( system, options ) {
 	// Uncomment the following code line and
 	// change the string parameter as needed.
 
-	PS.statusText( "Your Turn - Select Tank" );
+	PS.statusText( "Your Turn - Select Helicopter" );
 	PS.statusColor(PS.COLOR_WHITE);
 
 	PS.gridColor(PS.COLOR_GRAY_DARK);
 
-	let currID = 0;
-
-	for (let i = 0; i < 16; i++) {
-		for (let j = 0; j < 18; j++) {
-			PS.color(i, j, PS.COLOR_GRAY_DARK);
-			let border = PS.border(i, j, 0);
-			if (i == 0 && j <= 15) {
-				border.left = 2;
-			} else if (i == 15 && j <= 15) {
-				border.right = 2;
-			}
-
-			if (j == 0) {
-				border.top = 2;
-			} else if (j == 15) {
-				border.bottom = 2;
-			}
-
-			PS.border(i, j, border);
-			PS.borderColor(i, j, PS.COLOR_WHITE);
-
-			if (j <= 15) {
-				const space = board[j][i];
-				if (space == 1) {
-					PS.color(i, j, PS.COLOR_BLUE);
-				}
-				if (space == 10) {
-					PS.color(i, j, PS.COLOR_VIOLET);
-					PS.glyph(i, j, "☔");
-					tanks.push({x: i, y: j, owner: 1, id: currID});
-					// tankSprites.push(null);
-					currID++;
-				}
-				if (space == 20) {
-					PS.color(i, j, PS.COLOR_YELLOW);
-					PS.glyph(i, j, '☔');
-					tanks.push({x: i, y: j, owner: 2, id: currID});
-					// tankSprites.push(null);
-					currID++;
-				}
-			}
-		}
-	}
-
+	loadBoard();
 	// PS.imageLoad('sprites/tank-y.png', (image) => {
 	// 	for (let i = 0; i < tanks.length; i++) {
 	// 		if (tanks[i].owner == 1) {
@@ -241,6 +227,59 @@ PS.init = function( system, options ) {
 	// Add any other initialization code you need here.
 	
 };
+
+function loadBoard() {
+	tanks = [];
+	let currID = 0;
+
+	for (let i = 0; i < 16; i++) {
+		for (let j = 0; j < 18; j++) {
+			PS.color(i, j, PS.COLOR_GRAY_DARK);
+			PS.glyph(i, j, '');
+			let border = PS.border(i, j, 0);
+			if (i == 0 && j <= 15) {
+				border.left = 2;
+			} else if (i == 15 && j <= 15) {
+				border.right = 2;
+			}
+
+			if (j == 0) {
+				border.top = 2;
+			} else if (j == 15) {
+				border.bottom = 2;
+			}
+
+			PS.border(i, j, border);
+			PS.borderColor(i, j, PS.COLOR_WHITE);
+
+			if (j <= 15) {
+				const space = board[j][i];
+				if (space == 1) {
+					PS.color(i, j, MY_BLUE);
+				}
+				if (space == 2) {
+					PS.color(i, j, PS.COLOR_RED);
+					PS.glyph(i, j, BLAST_SYMBOL);
+				}
+				if (space == 10) {
+					PS.color(i, j, MY_PURPLE);
+					PS.glyph(i, j, TANK_SYMBOL);
+					tanks.push({x: i, y: j, owner: 1, id: currID});
+					// tankSprites.push(null);
+					currID++;
+				}
+				if (space == 20) {
+					PS.color(i, j, MY_YELLOW);
+					PS.glyph(i, j, TANK_SYMBOL);
+					tanks.push({x: i, y: j, owner: 2, id: currID});
+					// tankSprites.push(null);
+					currID++;
+				}
+			}
+			// PS.glyph(i, j, IDK.charAt((j*16)+i));
+		}	
+	}
+}
 
 function displayOptions() {
 	PS.color(1, 17, PS.COLOR_CYAN);
@@ -306,7 +345,16 @@ function hideMovement() {
 		const spotY = tankY + MOVELOCS[i][1];
 
 		if (spotX >= 0 && spotX <= 15 && spotY >= 0 && spotY <= 15) {
-			PS.glyph(spotX, spotY, '');
+			const spot = board[spotY][spotX];
+			if (spot == 2) {
+				PS.glyph(spotX, spotY, BLAST_SYMBOL);
+				PS.glyphColor(spotX, spotY, PS.COLOR_BLACK);
+			} else if (spot == 20 || spot == 10) {
+				PS.glyph(spotX, spotY, TANK_SYMBOL);
+				PS.glyphColor(spotX, spotY, PS.COLOR_BLACK);
+			} else {
+				PS.glyph(spotX, spotY, '');
+			}
 		}
 	}
 }
@@ -320,8 +368,8 @@ function moveTank(tank, x, y) {
 	tanks[tank.id].y = y;
 	board[y][x] = 10;
 
-	PS.color(x, y, PS.COLOR_VIOLET);
-	PS.glyph(x, y, "🚁");
+	PS.color(x, y, MY_PURPLE);
+	PS.glyph(x, y, TANK_SYMBOL);
 	PS.glyphColor(x, y, PS.COLOR_BLACK);
 }
 
@@ -357,7 +405,16 @@ function hideFire() {
 		const spotY = tankY + FIRELOCS[i][1];
 
 		if (spotX >= 0 && spotX <= 15 && spotY >= 0 && spotY <= 15) {
-			PS.glyph(spotX, spotY, '');
+				const spot = board[spotY][spotX];
+				if (spot == 2) {
+					PS.glyph(spotX, spotY, BLAST_SYMBOL);
+					PS.glyphColor(spotX, spotY, PS.COLOR_BLACK);
+				} else if (spot == 20 || spot == 10) {
+					PS.glyph(spotX, spotY, TANK_SYMBOL);
+					PS.glyphColor(spotX, spotY, PS.COLOR_BLACK);
+				} else {
+					PS.glyph(spotX, spotY, '');
+				}
 		}
 	}
 }
@@ -374,7 +431,7 @@ function fire(x, y) {
 
 	// PS.audioPlayChannel(blast);
 	PS.color(x, y, PS.COLOR_RED);
-	PS.glyph(x, y, "🔥");
+	PS.glyph(x, y, BLAST_SYMBOL);
 }
 
 function enemyTurn() {
@@ -481,12 +538,12 @@ function enemyMove(target) {
 	tanks[selected.id].x = bestSpot.x;
 	tanks[selected.id].y = bestSpot.y;
 
-	PS.color(bestSpot.x, bestSpot.y, PS.COLOR_YELLOW);
-	PS.glyph(bestSpot.x, bestSpot.y, "🚁");
+	PS.color(bestSpot.x, bestSpot.y, MY_YELLOW);
+	PS.glyph(bestSpot.x, bestSpot.y, TANK_SYMBOL);
 	PS.glyphColor(bestSpot.x, bestSpot.y, PS.COLOR_BLACK);
 	board[bestSpot.y][bestSpot.x] = 20;
 
-	PS.statusText("Your Turn - Select Tank");
+	PS.statusText("Your Turn - Select Helicopter");
 	gameState = 0;
 	selected = null;
 
@@ -499,7 +556,7 @@ function enemyFire(tank) {
 	tanks[tank.id] = null;
 	board[tank.y][tank.x] = 2;
 
-	PS.color(selected.x, selected.y, PS.COLOR_YELLOW);
+	PS.color(selected.x, selected.y, MY_YELLOW);
 	hideFire();
 
 	let playersLeft = false;
@@ -510,18 +567,20 @@ function enemyFire(tank) {
 	}
 
 	if (playersLeft) {
-		PS.statusText("Your Turn - Select Tank");
+		PS.statusText("Your Turn - Select Helicopter");
 		gameState = 0;
 	} else {
+		PS.statusText("Enemy Wins!!!");
+		winner = 2;
 		gameState = 5;
 	}
 
 	selected = null;
 	PS.audioPlayChannel(blast, {
 		onEnd: () => {
-			if (gameState == 5) {
+			if (winner == 2) {
 				PS.audioPlayChannel(wilhelm);
-				PS.statusText("Enemy Wins!!!");
+				winner = 3;
 			}
 		}
 	});
@@ -563,6 +622,7 @@ PS.touch = function( x, y, data, options ) {
 					selected = null;
 					enemyTurn();
 				}
+				break;
 			}
 		}
 
@@ -585,9 +645,9 @@ PS.touch = function( x, y, data, options ) {
 				PS.statusText("Choose where to fire to");
 				showFire();
 			} else {
-				PS.color(selected.x, selected.y, PS.COLOR_VIOLET);
+				PS.color(selected.x, selected.y, MY_PURPLE);
 			
-				PS.statusText("Your Turn - Select Tank");
+				PS.statusText("Your Turn - Select Helicopter");
 				hideOptions();
 				gameState = 0;
 				selected = null;
@@ -607,6 +667,7 @@ PS.touch = function( x, y, data, options ) {
 			
 
 			if (x == spotX && y == spotY && !(spotX < 0 || spotX > 15 || spotY < 0 || spotY > 15)) {
+				// PS.debug(`found spot at ${spotX}, ${spotY}\n`)
 				const spot = board[spotY][spotX];
 				if (spot == 0 || spot == 20 || spot == 10) {
 					clicked = true;
@@ -614,7 +675,7 @@ PS.touch = function( x, y, data, options ) {
 					fire(spotX, spotY);
 					PS.statusText("Your Turn - Select Tank");
 					hideOptions();
-					PS.color(tankX, tankY, PS.COLOR_VIOLET);
+					PS.color(tankX, tankY, MY_PURPLE);
 
 					let enemiesLeft = false;
 
@@ -630,18 +691,28 @@ PS.touch = function( x, y, data, options ) {
 						gameState = 4;
 						enemyTurn();
 					} else {
-						gameState = 5;
+						if (level == 1) {
+							gameState = 1;
+							board = MAP2;
+							loadBoard();
+							level = 2;
+						} else {
+							gameState = 5;
+							winner = 1;
+							PS.statusText("You win!!!!!");
+						}
 					}
 					PS.audioPlayChannel(blast, {
 						onEnd: () => {
-							if (gameState == 5) {
-								PS.statusText("You win!!!!!");
+							if (winner == 1) {
 								PS.audioPlayChannel(tada);
+								winner = 3;
 							}
-						}
+						},
 					})
 					
 				}
+				break;
 			}
 		}
 
@@ -662,9 +733,9 @@ PS.touch = function( x, y, data, options ) {
 				PS.statusText("Choose where to move to");
 				showMovement();
 			} else {
-				PS.color(selected.x, selected.y, PS.COLOR_VIOLET);
+				PS.color(selected.x, selected.y, MY_PURPLE);
 			
-				PS.statusText("Your Turn - Select Tank");
+				PS.statusText("Your Turn - Select Helicopter");
 				hideOptions();
 				gameState = 0;
 				selected = null;
@@ -726,7 +797,7 @@ PS.touch = function( x, y, data, options ) {
 			if (gameState == 1) {
 				PS.color(selected.x, selected.y, PS.COLOR_VIOLET);
 			}
-			PS.statusText("Your Turn - Select Tank");
+			PS.statusText("Your Turn - Select Helicopter");
 			hideOptions();
 			gameState = 0;
 			selected = null;
