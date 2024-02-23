@@ -692,7 +692,7 @@ PS.touch = function( x, y, data, options ) {
 						enemyTurn();
 					} else {
 						if (level == 1) {
-							gameState = 1;
+							gameState = 0;
 							board = MAP2;
 							loadBoard();
 							level = 2;
