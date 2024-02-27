@@ -42,6 +42,7 @@ If you don't use JSHint (or are using it with a configuration file), you can saf
 0 - empty space
 1 - water
 2 - fire
+3 - building
 10 - player tank
 20 - enemy tank
 */
@@ -74,12 +75,31 @@ const MAP2 = [
 	[0, 10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 20, 0, 0, 0],
+	[0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 20, 0, 0, 0],
 	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 20, 0],
 	[1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 	[1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+	[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+	[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+];
+
+const MAP3 = [
+	[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+	[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+	[0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1],
+	[0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 3, 0, 1, 1],
+	[0, 0, 0, 3, 0, 0, 0, 0, 3, 3, 0, 0, 20, 0, 0, 0],
+	[0, 10, 0, 0, 0, 0, 0, 0, 3, 3, 20, 0, 0, 3, 0, 0],
+	[0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0],
+	[0, 0, 0, 3, 0, 0, 3, 0, 0, 0, 0, 0, 0, 3, 0, 0],
+	[0, 3, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 20, 0, 0, 0],
+	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 20, 0, 0, 0, 3, 0],
+	[0, 0, 0, 0, 3, 0, 0, 0, 3, 0, 0, 0, 3, 0, 0, 0],
+	[0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 3, 0, 0, 20, 0],
+	[1, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 3, 0, 0, 0],
+	[1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 0, 3, 0, 0],
 	[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
 	[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
 ];
@@ -109,7 +129,8 @@ function generateFireLocs() {
 */
 let gameState = 0;
 
-let level = 1;
+let level = 0;
+const LEVELS = [MAP1, MAP2, MAP3];
 
 let tanks = [];
 let selected = null;
@@ -120,16 +141,19 @@ let tada = null;
 let click = null;
 let move = null;
 let blast = null;
+let destroyed = null;
 
 //EMOJIS
 // for some reason, pasting the emojis into my code doesn't work so I have to use the raw unicode values lmao
 const TANK_SYMBOL = parseInt("1f681", 16);
 const BLAST_SYMBOL = parseInt("1f4a5", 16);
+const BUILDING_SYMBOL = parseInt("1f3e2", 16);
 
 //COLORS
 const MY_YELLOW = PS.makeRGB(255, 255, 76);
 const MY_PURPLE = PS.makeRGB(162, 76, 255);
 const MY_BLUE = PS.makeRGB(63, 63, 255);
+const MY_GRAY = PS.makeRGB(160, 160, 160);
 
 /*
 PS.init( system, options )
@@ -222,6 +246,12 @@ PS.init = function( system, options ) {
 		onLoad: (data) => {
 			wilhelm = data.channel;
 		}
+	});
+
+	PS.audioLoad('fx_blast3', {
+		onLoad: (data) => {
+			destroyed = data.channel;
+		}
 	})
 
 	// Add any other initialization code you need here.
@@ -260,6 +290,10 @@ function loadBoard() {
 				if (space == 2) {
 					PS.color(i, j, PS.COLOR_RED);
 					PS.glyph(i, j, BLAST_SYMBOL);
+				}
+				if (space == 3) {
+					PS.color(i, j, MY_GRAY);
+					PS.glyph(i, j, BUILDING_SYMBOL);
 				}
 				if (space == 10) {
 					PS.color(i, j, MY_PURPLE);
@@ -352,6 +386,9 @@ function hideMovement() {
 			} else if (spot == 20 || spot == 10) {
 				PS.glyph(spotX, spotY, TANK_SYMBOL);
 				PS.glyphColor(spotX, spotY, PS.COLOR_BLACK);
+			} else if (spot == 3) {
+				PS.glyph(spotX, spotY, BUILDING_SYMBOL);
+				PS.glyphColor(spotX, spotY, PS.COLOR_BLACK);	
 			} else {
 				PS.glyph(spotX, spotY, '');
 			}
@@ -385,7 +422,7 @@ function showFire() {
 
 		if (!(spotX < 0 || spotX > 15 || spotY < 0 || spotY > 15)) {
 			const spot = board[spotY][spotX];
-			if (spot == 0 || spot == 10 || spot == 20) {
+			if (spot == 0 || spot == 10 || spot == 20 || spot == 3) {
 				PS.glyph(spotX, spotY, 'X');
 				PS.glyphColor(spotX, spotY, PS.COLOR_RED);
 			}
@@ -412,6 +449,9 @@ function hideFire() {
 				} else if (spot == 20 || spot == 10) {
 					PS.glyph(spotX, spotY, TANK_SYMBOL);
 					PS.glyphColor(spotX, spotY, PS.COLOR_BLACK);
+				} else if (spot == 3) {
+					PS.glyph(spotX, spotY, BUILDING_SYMBOL);
+					PS.glyphColor(spotX, spotY, PS.COLOR_BLACK);	
 				} else {
 					PS.glyph(spotX, spotY, '');
 				}
@@ -427,11 +467,38 @@ function fire(x, y) {
 		}
 	}
 
+	if (board[y][x] == 3) {
+		setTimeout(destroySurroundingSpots, 200, x, y);
+	}
+
 	board[y][x] = 2;
 
 	// PS.audioPlayChannel(blast);
 	PS.color(x, y, PS.COLOR_RED);
 	PS.glyph(x, y, BLAST_SYMBOL);
+}
+
+function destroySurroundingSpots(x, y) {
+	if (x-1 >= 0 && board[y][x-1] != 1) {
+		fire(x-1, y);
+	}
+	if (x+1 < 16 && board[y][x+1] != 1) {
+		fire(x+1, y);
+	}
+	if (y-1 >= 0 && board[y-1][x] != 1)  {
+		fire(x, y-1);
+	}
+	if (y+1 < 16 && board[y+1][x] != 1)  {
+		fire(x, y+1);
+	}
+	checkIfLevelEnded();
+	PS.audioPlayChannel(destroyed, {
+		onEnd: () => {
+			if (winner == 1) {
+				PS.audioPlayChannel(tada);
+			}
+		}
+	});
 }
 
 function enemyTurn() {
@@ -452,6 +519,10 @@ function enemySelectTank() {
 		if (tanks[i].owner == 2) {
 			myTanks.push(tanks[i]);
 		} 
+	}
+	if (myTanks.length == 0) {
+		checkIfLevelEnded();
+		return;
 	}
 
 	const tankNum = PS.random(myTanks.length) - 1;
@@ -587,6 +658,32 @@ function enemyFire(tank) {
 	PS.gridRefresh();
 }
 
+function checkIfLevelEnded() {
+	let enemiesLeft = false;
+
+	for (let i = 0; i < tanks.length; i++) {
+		if (tanks[i] == null || tanks[i].owner == 1) continue;
+		enemiesLeft = true;
+		break;
+	}
+	
+	if (enemiesLeft) {
+		gameState = 4;
+	} else {
+		if (level != LEVELS.length - 1) {
+			gameState = 0;
+			PS.statusText( "Your Turn - Select Helicopter" );
+			level++;
+			board = LEVELS[level];
+			loadBoard();
+		} else {
+			gameState = 5;
+			winner = 1;
+			PS.statusText("You win!!!!!");
+		}
+	}
+}
+
 /*
 PS.touch ( x, y, data, options )
 Called when the left mouse button is clicked over bead(x, y), or when bead(x, y) is touched.
@@ -669,39 +766,20 @@ PS.touch = function( x, y, data, options ) {
 			if (x == spotX && y == spotY && !(spotX < 0 || spotX > 15 || spotY < 0 || spotY > 15)) {
 				// PS.debug(`found spot at ${spotX}, ${spotY}\n`)
 				const spot = board[spotY][spotX];
-				if (spot == 0 || spot == 20 || spot == 10) {
+				if (spot == 0 || spot == 20 || spot == 10 || spot == 3) {
 					clicked = true;
 					hideFire();
 					fire(spotX, spotY);
 					PS.statusText("Your Turn - Select Tank");
 					hideOptions();
 					PS.color(tankX, tankY, MY_PURPLE);
-
-					let enemiesLeft = false;
-
-					for (let i = 0; i < tanks.length; i++) {
-						if (tanks[i] == null || tanks[i].owner == 1) continue;
-						enemiesLeft = true;
-						break;
-					}
-					
 					selected = null;
 
-					if (enemiesLeft) {
-						gameState = 4;
+					checkIfLevelEnded();
+					if (gameState == 4) {
 						enemyTurn();
-					} else {
-						if (level == 1) {
-							gameState = 0;
-							board = MAP2;
-							loadBoard();
-							level = 2;
-						} else {
-							gameState = 5;
-							winner = 1;
-							PS.statusText("You win!!!!!");
-						}
 					}
+
 					PS.audioPlayChannel(blast, {
 						onEnd: () => {
 							if (winner == 1) {
