@@ -104,6 +104,8 @@ const MAP3 = [
 	[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
 ];
 
+let winScreen = null;
+
 let board = MAP1;
 let winner = 0;
 
@@ -254,6 +256,9 @@ PS.init = function( system, options ) {
 		}
 	})
 
+	PS.imageLoad('win.bmp', (img) => {
+		winScreen = img;
+	})
 	// Add any other initialization code you need here.
 	
 };
@@ -680,6 +685,14 @@ function checkIfLevelEnded() {
 			gameState = 5;
 			winner = 1;
 			PS.statusText("You win!!!!!");
+			PS.gridSize(32, 32);
+			for (let i = 0; i < 32; i++) {
+				for (let j = 0; j < 32; j++) {
+					PS.border(i, j, 0);
+				}
+			}
+
+			PS.imageBlit(winScreen, 0, 0);
 		}
 	}
 }
