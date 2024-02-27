@@ -693,6 +693,7 @@ function checkIfLevelEnded() {
 			}
 
 			PS.imageBlit(winScreen, 0, 0);
+			PS.gridColor(PS.COLOR_GRAY_DARK);
 		}
 	}
 }
